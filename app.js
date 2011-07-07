@@ -34,6 +34,12 @@ app.get('/', function(req, res){
   });
 });
 
+app.get('/chat', function(req, res){
+  res.render('chat', {locals: {
+    title: 'NowJS + Express Example'
+  }});
+});
+
 // Only listen on $ node app.js
 
 if (!module.parent) {
@@ -41,7 +47,7 @@ if (!module.parent) {
   console.log("Express server listening on port %d", app.address().port);
 }
 
-# NowJS
+// NowJS
 
 var nowjs = require('now');
 var everyone = nowjs.initialize(app);

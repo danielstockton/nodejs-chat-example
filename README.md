@@ -1,1 +1,1 @@
-=Chat application using Express and NowJS
+# Chat application using Express and NowJS

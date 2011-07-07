@@ -1,0 +1,24 @@
+h2
+  Chat
+div#messages
+div
+  input(type='text', id='text', focus='true')
+  input(type='button', value='Send', id='send')
+
+
+script
+  $(document).ready(function(){
+
+    now.receiveMessage = function(name, message){
+      $("#messages").append("<div>" + name + ": " + message + "</div>");
+    }
+
+    $("#send").click(function(){
+      now.distributeMessage($("#text").val());
+      $("#text").val("");
+      $("#text").focus();
+    });
+
+    now.name = prompt("What's your name?", "");
+
+  });

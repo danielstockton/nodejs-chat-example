@@ -4,7 +4,8 @@
  */
 
 var express = require('express'),
-    mongoose = require('mongoose');
+    mongoose = require('mongoose'),
+    models = require('./models/index');
 
 var app = module.exports = express.createServer();
 
@@ -29,18 +30,40 @@ app.configure('production', function(){
   app.use(express.errorHandler()); 
 });
 
+// Models
+
+var Chat = mongoose.model('Chat');
+
 // Routes
 
 app.get('/', function(req, res){
+  var chat = new Chat();
   res.render('index', {
-    title: 'Express'
+    title: 'Chat Example in NodeJS',
+    id: chat._id
   });
 });
 
-app.get('/chat', function(req, res){
-  res.render('chat', {locals: {
-    title: 'NowJS + Express Example'
-  }});
+app.post('/chat/:id', function(req, res) {
+  var chat = new Chat();
+  chat.title = req.body.title;
+  chat.save(function (err) {
+    if (!err) {
+      console.log('Chat saved successfully!');
+    }
+  });
+  res.redirect('/chat/' + chat._id);
+});
+
+app.get('/chat/:id', function(req, res){
+  Chat.findById(req.params.id, function (err, chat) {
+    if (!err) {
+      res.render('chat', {
+          title: chat.title,
+          room:  chat._id 
+      });
+    }
+  });
 });
 
 // Only listen on $ node app.js
@@ -52,10 +75,11 @@ if (!module.parent) {
 
 // NowJS
 
-var nowjs = require('now');
-var everyone = nowjs.initialize(app);
+var nowjs = require('now'),
+    everyone = nowjs.initialize(app);
 
 everyone.connected(function(){
+  nowjs.getGroup(this.now.room).addUser(this.user.clientId);
   console.log("Joined: " + this.now.name);
 });
 
@@ -64,6 +88,13 @@ everyone.disconnected(function(){
       console.log("Left: " + this.now.name);
 });
 
+everyone.now.changeRoom = function(newRoom){
+  nowjs.getGroup(this.now.room).removeUser(this.user.clientId);
+  nowjs.getGroup(newRoom).addUser(this.user.clientId);
+  this.now.room = newRoom;
+  this.now.receiveMessage("SERVER", "You're now in " + this.now.room);
+};
+
 everyone.now.distributeMessage = function(message){
-  everyone.now.receiveMessage(this.now.name, message);
+   nowjs.getGroup(this.now.room).now.receiveMessage(this.now.name, message);
 };

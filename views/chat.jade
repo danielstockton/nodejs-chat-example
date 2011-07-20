@@ -1,13 +1,7 @@
-h2
-  Chat
-div#messages
-div
-  input(type='text', id='text', focus='true')
-  input(type='button', value='Send', id='send')
-
-
 script
   $(document).ready(function(){
+
+    now.changeRoom("#{room}");
 
     now.receiveMessage = function(name, message){
       $("#messages").append("<div>" + name + ": " + message + "</div>");
@@ -20,5 +14,11 @@ script
     });
 
     now.name = prompt("What's your name?", "");
-
+    
   });
+
+h2 #{title}
+div#messages
+div
+  input(type='text', id='text', focus='true')
+  input(type='button', value='Send', id='send')

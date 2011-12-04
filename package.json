@@ -1,0 +1,9 @@
+{ 
+  "name" : "my-project", 
+  "version" : "1.0.0", 
+  "dependencies" : { 
+    "express" : ">= 2.5.1",
+    "mongoose" : ">= 2.4.1",
+    "now" : ">= 0.7.6",
+    "socket.io" : ">= 0.8.7"
+  } }
